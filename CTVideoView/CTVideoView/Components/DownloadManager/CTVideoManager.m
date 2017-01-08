@@ -219,6 +219,36 @@ NSString * const kCTVideoManagerNotificationUserInfoKeyProgress = @"kCTVideoMana
         [[NSFileManager defaultManager] removeItemAtURL:resumeUrl error:NULL];
     }
     WeakSelf;
+    NSProgress *downloadProgress = [NSProgress currentProgress];
+    NSURLSessionDownloadTask *downloadTask = [self.sessionManager downloadTaskWithResumeData:fileData progress:&downloadProgress destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+        return nativeUrl;
+    } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+        StrongSelf;
+        [strongSelf.downloadTaskPool removeObjectForKey:url];
+        NSString *notificationNameToPost = nil;
+        if (error) {
+            notificationNameToPost = kCTVideoManagerDidFailedDownloadVideoNotification;
+            [strongSelf.dataCenter updateStatus:CTVideoRecordStatusDownloadFailed toRemoteUrl:url];
+        } else {
+            notificationNameToPost = kCTVideoManagerDidFinishDownloadVideoNotification;
+            [strongSelf.dataCenter updateStatus:CTVideoRecordStatusDownloadFinished toRemoteUrl:url];
+            
+        }
+        
+        if (filePath) {
+            [strongSelf.dataCenter deleteAllOldEntitiesAboveCount:strongSelf.totalDownloadedFileCountLimit];
+            [[NSNotificationCenter defaultCenter] postNotificationName:notificationNameToPost
+                                                                object:nil
+                                                              userInfo:@{
+                                                                         kCTVideoManagerNotificationUserInfoKeyNativeUrl:filePath,
+                                                                         kCTVideoManagerNotificationUserInfoKeyRemoteUrl:url
+                                                                         }];
+        } else {
+            // task canceled, do nothing
+        }
+    }];
+    
+    /*
     NSURLSessionDownloadTask *downloadTask = [self.sessionManager downloadTaskWithResumeData:fileData
                                                                                     progress:^(NSProgress * _Nonnull downloadProgress) {
                                                                                         StrongSelf;
@@ -262,6 +292,8 @@ NSString * const kCTVideoManagerNotificationUserInfoKeyProgress = @"kCTVideoMana
                                                                                    // task canceled, do nothing
                                                                                }
                                                                            }];
+    */
+    
     [downloadTask resume];
     self.downloadTaskPool[url] = downloadTask;
     [self.dataCenter updateStatus:CTVideoRecordStatusWaitingForDownload toRemoteUrl:url];
@@ -287,6 +319,37 @@ NSString * const kCTVideoManagerNotificationUserInfoKeyProgress = @"kCTVideoMana
     [self.dataCenter updateWithRemoteUrl:url nativeUrl:nativeUrl status:CTVideoRecordStatusWaitingForDownload];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     WeakSelf;
+    NSProgress *downloadProgress = [NSProgress currentProgress];
+    NSURLSessionDownloadTask *downloadTask = [self.sessionManager downloadTaskWithRequest:request progress:&downloadProgress destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+        return nativeUrl;
+    } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+        StrongSelf;
+        NSString *notificationNameToPost = nil;
+        [strongSelf.downloadTaskPool removeObjectForKey:url];
+        
+        if (error) {
+            notificationNameToPost = kCTVideoManagerDidFailedDownloadVideoNotification;
+            [strongSelf.dataCenter updateStatus:CTVideoRecordStatusDownloadFailed toRemoteUrl:url];
+        } else {
+            notificationNameToPost = kCTVideoManagerDidFinishDownloadVideoNotification;
+            [strongSelf.dataCenter updateStatus:CTVideoRecordStatusDownloadFinished toRemoteUrl:url];
+        }
+        
+        if (filePath) {
+            [strongSelf.dataCenter deleteAllOldEntitiesAboveCount:strongSelf.totalDownloadedFileCountLimit];
+            [[NSNotificationCenter defaultCenter] postNotificationName:notificationNameToPost
+                                                                object:nil
+                                                              userInfo:@{
+                                                                         kCTVideoManagerNotificationUserInfoKeyNativeUrl:filePath,
+                                                                         kCTVideoManagerNotificationUserInfoKeyRemoteUrl:url
+                                                                         }];
+        } else {
+            // task canceled, do nothing
+        }
+
+    }];
+    
+    /*
     NSURLSessionDownloadTask *downloadTask = [self.sessionManager downloadTaskWithRequest:request
                                                                                  progress:^(NSProgress * _Nonnull downloadProgress) {
                                                                                      StrongSelf;
@@ -330,7 +393,8 @@ NSString * const kCTVideoManagerNotificationUserInfoKeyProgress = @"kCTVideoMana
                                                                                 // task canceled, do nothing
                                                                             }
                                                                         }];
-
+    */
+    
     [downloadTask resume];
     self.downloadTaskPool[url] = downloadTask;
     [self.dataCenter updateStatus:CTVideoRecordStatusWaitingForDownload toRemoteUrl:url];
