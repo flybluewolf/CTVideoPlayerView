@@ -15,6 +15,7 @@
 #import "ChangeToFullScreenViewController.h"
 #import "PlayControlViewController.h"
 #import "VideoPlayIssue22ViewController.h"
+#import "VideoRecordViewController.h"
 
 #import <HandyFrame/UIView+LayoutMethods.h>
 #import <AVFoundation/AVFoundation.h>
@@ -70,6 +71,9 @@
     if (indexPath.row == 10) {
         viewControllerToPush = [[VideoPlayIssue22ViewController alloc] initWithVideoUrlString:info[@"url"]];
     }
+    if (indexPath.row == 11) {
+        viewControllerToPush = [[VideoRecordViewController alloc] init];
+    }
 
     if (viewControllerToPush) {
         viewControllerToPush.title = info[@"title"];
@@ -110,11 +114,11 @@
         _dataSource = @[
                         @{
                             @"title":@"Single Remote Video",
-                            @"url":@"http://7xs8ft.com2.z0.glb.qiniucdn.com/rcd_vid_865e1fff817746d29ecc4996f93b7f74"
+                            @"url":@"https://backend.flicklink.com:1337/parse/files/flicklinkAppId/a2d8aec7a78231c8c73eb2a8002283a7_PF-VID-2017-11-23T22-06-10AEDT.mov"
                             },
                         @{
                             @"title":@"Single Native Video",
-                            @"url":[[[NSBundle mainBundle] URLForResource:@"a" withExtension:@"mp4"] absoluteString]
+                            @"url":[[[NSBundle mainBundle] URLForResource:@"b" withExtension:@"mov"] absoluteString]
                             },
                         @{
                             @"title":@"Short Single Live Stream Video",
@@ -127,20 +131,19 @@
                         @{
                             @"title":@"Videos in Tableview",
                             @"urlList":@[
-                                    @"http://7xs8ft.com2.z0.glb.qiniucdn.com/rcd_vid_856a6738eefc495bbd7b0ed59beaa9fe",
-                                    @"http://7xs8ft.com2.z0.glb.qiniucdn.com/rcd_vid_e05f72400bae4e0b8ae6825c5891af64",
-                                    @"http://7xs8ft.com2.z0.glb.qiniucdn.com/rcd_vid_f905cb3d6a1847afb071b3aeea42eb51",
-                                    @"http://7xs8ft.com2.z0.glb.qiniucdn.com/rcd_vid_57dad11ccfd3422cbe6f0b2674fa0ab1",
-                                    @"http://7xs8ft.com2.z0.glb.qiniucdn.com/rcd_vid_b5b00d7e77854a2ea478cd5dd648191d",
-                                    @"http://7xs8ft.com2.z0.glb.qiniucdn.com/rcd_vid_d7c0843949284cb79a8f4bed20111577",
-                                    @"http://7xs8ft.com2.z0.glb.qiniucdn.com/rcd_vid_34dd3f3f36974092876efbcac1d1160d",
-                                    @"http://7xs8ft.com2.z0.glb.qiniucdn.com/rcd_vid_42b791e5aed7463b865518378a78de6a",
-                                    @"http://7xs8ft.com2.z0.glb.qiniucdn.com/rcd_vid_03e0b80cc69b4f069af9b5ba88be6752",
+                                    @"https://www.quirksmode.org/html5/videos/big_buck_bunny.mp4",
+                                    @"https://www.quirksmode.org/html5/videos/big_buck_bunny.mp4",
+                                    @"https://www.quirksmode.org/html5/videos/big_buck_bunny.mp4",
+                                    @"https://www.quirksmode.org/html5/videos/big_buck_bunny.mp4",
+                                    @"https://www.quirksmode.org/html5/videos/big_buck_bunny.mp4",
+                                    @"https://www.quirksmode.org/html5/videos/big_buck_bunny.mp4",
+                                    @"https://www.quirksmode.org/html5/videos/big_buck_bunny.mp4",
+                                    @"https://www.quirksmode.org/html5/videos/big_buck_bunny.mp4",
                                     ]
                             },
                         @{
                             @"title":@"MP4 Download Then Play",
-                            @"url":@"http://7xs8ft.com2.z0.glb.qiniucdn.com/rcd_vid_e05f72400bae4e0b8ae6825c5891af64"
+                            @"url":@"https://www.quirksmode.org/html5/videos/big_buck_bunny.mp4"
                             },
                         @{
                             @"title":@"Air Play Native Asset",
@@ -148,7 +151,7 @@
                             },
                         @{
                             @"title":@"Horizontal Full Screen Demo",
-                            @"url":@"http://7xs8ft.com2.z0.glb.qiniucdn.com/rcd_vid_865e1fff817746d29ecc4996f93b7f74"
+                            @"url":@"https://www.quirksmode.org/html5/videos/big_buck_bunny.mp4"
                             },
                         @{
                             @"title":@"Vertical Full Screen Demo",
@@ -161,6 +164,9 @@
                         @{
                             @"title":@"Issue #22",
                             @"url":[[[NSBundle mainBundle] URLForResource:@"a" withExtension:@"mp4"] absoluteString]
+                            },
+                        @{
+                            @"title":@"Record Video"
                             },
                         ];
     }

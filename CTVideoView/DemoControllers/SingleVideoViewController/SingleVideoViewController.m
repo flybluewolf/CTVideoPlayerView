@@ -50,7 +50,7 @@
 
     [self.videoView fill];
 
-    self.playOrPauseButton.size = CGSizeMake(SCREEN_WIDTH/3.0f, 50);
+    self.playOrPauseButton.ct_size = CGSizeMake(SCREEN_WIDTH/3.0f, 50);
     [self.playOrPauseButton bottomInContainer:50 shouldResize:NO];
     [self.playOrPauseButton leftInContainer:0 shouldResize:NO];
 
@@ -118,7 +118,7 @@
 {
     if (_videoView == nil) {
         _videoView = [[CTVideoView alloc] init];
-        _videoView.shouldReplayWhenFinish = YES;
+        _videoView.shouldReplayWhenFinish = NO;
         _videoView.shouldPlayAfterPrepareFinished = NO;
         _videoView.shouldChangeOrientationToFitVideo = YES;
         [_videoView setShouldObservePlayTime:YES withTimeGapToObserve:100];
